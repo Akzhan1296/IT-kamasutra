@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React from "react";
 import styles from "./users.module.css";
 import userPhoto from "../../assets/imgs/userPhoto.jpg";
-import { NavLink } from "react-router-dom";
-import * as axios from "axios";
+import {NavLink} from "react-router-dom";
+
 const Users = (props) => {
   let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize);
   let pages = [];
@@ -43,43 +43,18 @@ const Users = (props) => {
             <div>
               {u.followed ? (
                 <button
+                  disabled={props.followingInProgress.some(id=>id===u.id)}
                   onClick={() => {
-                    axios
-                    .delete(
-                      `https://social-network.samuraijs.com/api/1.0/follow/${u.id}`,{
-                        withCredentials: true,
-                        headers: {
-                          "API-KEY": "61d897f7-494d-49de-b6d4-e7d97f57a8ab"
-                        }
-                      }
-                    )
-                    .then((response) => {
-                      if(response.data.resultCode === 0) {
-                        props.unfollow(u.id);
-                      }
-                    });
-                  
+                    props.unfollow(u.id);
                   }}
                 >
                   unFollow{" "}
                 </button>
               ) : (
                 <button
+                  disabled={props.followingInProgress.some(id=>id===u.id)}
                   onClick={() => {
-                    axios
-                    .post(
-                      `https://social-network.samuraijs.com/api/1.0/follow/${u.id}`,{},{
-                        withCredentials: true,
-                        headers: {
-                          "API-KEY": "61d897f7-494d-49de-b6d4-e7d97f57a8ab"
-                        } 
-                      }
-                    )
-                    .then((response) => {
-                      if(response.data.resultCode === 0) {
-                        props.follow(u.id);
-                      }
-                    });
+                    props.follow(u.id);
                   }}
                 >
                   Follow
