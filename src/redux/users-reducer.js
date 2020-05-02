@@ -77,16 +77,16 @@ const usersReducer = (state = initialState, action) => {
 
 export const followSuccess = (userId) => ({ type: FOLLOW, userId });
 export const unfollowSuccess = (userId) => ({ type: UNFOLLOW, userId });
-export const setUsers = (users) => ({ type: SET_USERS, users });
+const setUsers = (users) => ({ type: SET_USERS, users });
 export const setCurrentPage = (currentPage) => ({
   type: SET_CURRENT_PAGE,
   currentPage,
 }); //current=> current:currentPage
-export const setTotalUsersCount = (totalUsersCount) => ({
+const setTotalUsersCount = (totalUsersCount) => ({
   type: SET_TOTAL_COUNT,
   count: totalUsersCount,
 }); // type: SET_TOTAL_COUNT, count:totalUsersCount
-export const toggleIsFetching = (isFetching) => ({
+const toggleIsFetching = (isFetching) => ({
   type: TOGGLE_IS_FETCHING,
   isFetching,
 }); //isFetching:true
@@ -95,6 +95,7 @@ export const toggleFollowingProgress = (isFetching, userId) => ({
   isFetching,
   userId,
 }); //isFetching:true
+
 
 export const getUsersThunkCreator = (currentPage, pageSize) => {
   return (dispatch) => {

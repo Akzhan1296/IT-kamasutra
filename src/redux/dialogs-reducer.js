@@ -31,7 +31,6 @@ const dialogsReducer = (state = initialState, action) => {
   switch (action.type) {
     
     case ADD_MESSAGE:
-      console.log(state);
       let body = state.newMessage;
       return {
         ...state,

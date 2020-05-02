@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import Header from "./header";
 import {auth} from "../../redux/auth-reducer";
 import {connect} from "react-redux";
-import {setAuthUserData} from "../../redux/auth-reducer"; 
-class HeaderContainer extends React.Component {
+
+class HeaderContainer extends Component {
   componentDidMount() {
     this.props.auth(); //Использовали thunk
 
@@ -21,7 +21,6 @@ const mapStateToProps = (state) => ({
 //эти данные из auth-reducer попадает в нашу компаненту
 
 export default connect(mapStateToProps,{
-  setAuthUserData,
   auth
 })(HeaderContainer);
 // короткая запись mapDispatchToProps
