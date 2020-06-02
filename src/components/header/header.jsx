@@ -6,9 +6,10 @@ const {header} = s;
 //Вложенность не сломаеться 
 
 const Header = (props) => {
+
     return (
       <header className = {header}>
-        <img src="https://cdn.worldvectorlogo.com/logos/tiktok-logo.svg" />
+        <img src="https://cdn.worldvectorlogo.com/logos/tiktok-logo.svg" alt="img"/>
       <div className={s.loginBlock}>
         {props.isAuth ? props.login :
         <NavLink to={"/login"}>
@@ -20,3 +21,8 @@ const Header = (props) => {
 }
 
 export default Header;
+
+//Через props мы получаем данные из thunk 
+//Мы поулчаем isAuth 
+//if isAuth === true => показываем название логина 
+//if isAuth ===false тогда делаем ссылку на компоненту логин

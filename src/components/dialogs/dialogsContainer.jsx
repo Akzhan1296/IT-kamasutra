@@ -4,8 +4,10 @@ import {
   addMessageActionCreator,
   updateNewMessageActionCreator,
 } from "../../redux/dialogs-reducer";
-
+import {withAuthRedirect} from "../../hoc/WithAuthRedirect";
 import {connect} from "react-redux";
+import {compose} from 'redux'
+
 
 //Старая версия когда мы сами делали контейнерную компоненту
 // const DialogsContainer = () => {
@@ -39,7 +41,7 @@ import {connect} from "react-redux";
 
 let mapStateToProps = (state) => {
   return {
-    dialogsPage: state.dialogsPage
+    dialogsPage: state.dialogsPage,
   }
 }
 // нужна для настройки callBack для функций 
@@ -57,8 +59,17 @@ let mapDispatchToProps = (dispatch) => {
     }
   }
 }
-//настройка callBack 
-const DialogsContainer = connect(mapStateToProps,mapDispatchToProps)(Dialogs);
 
-//SuperDialogsContainer новая презентационная компонента
-export default DialogsContainer;
+export default compose(
+  connect(mapStateToProps,mapDispatchToProps),
+  withAuthRedirect
+)(Dialogs)
+
+// let AuthRedirectComponent = withAuthRedirect(Dialogs);
+ // const DialogsContainer = connect(mapStateToProps,mapDispatchToProps)(AuthRedirectComponent);
+// export default DialogsContainer;
+
+
+//Здесь мы делаем connect с redux 
+//Здесь нету классового компонента так как пока что мы не делаем запрос на сервер 
+//Комментарий от 68 урока

@@ -19,7 +19,6 @@ let initialState = {
 
 const usersReducer = (state = initialState, action) => {
   //каждому reducer приходит свой кусочек state
-  console.log(action);
   switch (action.type) {
     case FOLLOW:
       return {
@@ -78,6 +77,7 @@ const usersReducer = (state = initialState, action) => {
 export const followSuccess = (userId) => ({ type: FOLLOW, userId });
 export const unfollowSuccess = (userId) => ({ type: UNFOLLOW, userId });
 const setUsers = (users) => ({ type: SET_USERS, users });
+
 export const setCurrentPage = (currentPage) => ({
   type: SET_CURRENT_PAGE,
   currentPage,

@@ -2,7 +2,10 @@ import React from "react";
 import {connect} from "react-redux";
 import {follow, unfollow, setCurrentPage,getUsersThunkCreator} from "../../redux/users-reducer";
 import Users from "./Users";
-import Preloader from "../common/preloader/Preloader"
+import Preloader from "../common/preloader/Preloader";
+import {withAuthRedirect} from "../../hoc/WithAuthRedirect";
+import {compose} from "redux";
+
 
 class UsersContainer extends React.Component {
     componentDidMount() {
@@ -38,7 +41,7 @@ class UsersContainer extends React.Component {
 
 let mapStateToProps = (state) => {
     return {
-        users: state.usersPage.users,
+        users: state.usersPage.users, 
         pageSize: state.usersPage.pageSize,
         totalUsersCount: state.usersPage.totalUsersCount,
         currentPage: state.usersPage.currentPage,
@@ -46,6 +49,7 @@ let mapStateToProps = (state) => {
         followingInProgress: state.usersPage.followingInProgress
     }
 }
+//mapStateToProps сама делает запрос к store получает state и subscribe
 
 // let mapDispatchToProps = (dispatch) => {
 //     return {
@@ -72,13 +76,24 @@ let mapStateToProps = (state) => {
 //             }
 //     }
 // }
-
-export default connect(mapStateToProps,{
+export default compose(
+  connect(mapStateToProps,{
     follow,
     unfollow,
     setCurrentPage,
-    getUsersThunkCreator
-})(UsersContainer);
+    getUsersThunkCreator //находится в reducer 
+}),
+  withAuthRedirect
+)(UsersContainer);
+
+//ДО COMPOSE
+// let withRedirect = withAuthRedirect(UsersContainer);
+// export default connect(mapStateToProps,{
+//     follow,
+//     unfollow,
+//     setCurrentPage,
+//     getUsersThunkCreator
+// })(withRedirect);
 
 // второй способ обявления mapDisptachToProps 
 //сама создаем callback и делает dispatch  

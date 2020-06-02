@@ -1,6 +1,7 @@
 import React from "react";
 import { Route } from "react-router-dom";
 
+import Login from "./components/Login/Login";
 import HeaderContainer from "./components/header/headerContainer";
 import Navbar from "./components/navbar/navbar";
 import ProfileContainer from "./components/profile/profileContainer";
@@ -13,17 +14,16 @@ import UsersContainer from "./components/users/usersContainer";
 import "./App.css";
 
 
-const App = () => {
+const App = (props) => {
   return (
     <div className="app-wrapper">
       <HeaderContainer />
       <Navbar />
       <div className="app-wrapper-content">
         <Route exact path="/dialogs" render={() => <DialogsContainer />} />
-
         <Route path="/profile/:userId?" render={() => <ProfileContainer />} />
-
         <Route path="/users" render={() => <UsersContainer />} />
+        <Route path="/login" render={() => <Login />} />
       </div>
     </div>
   );
