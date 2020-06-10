@@ -1,8 +1,7 @@
 import React from "react";
-import Dialogs from "./dialogs";
+import AddMessageFormRedux from "./dialogs";
 import {
   addMessageActionCreator,
-  updateNewMessageActionCreator,
 } from "../../redux/dialogs-reducer";
 import {withAuthRedirect} from "../../hoc/WithAuthRedirect";
 import {connect} from "react-redux";
@@ -51,11 +50,8 @@ let mapStateToProps = (state) => {
 //а именно store.dispatch.bind(store)
 let mapDispatchToProps = (dispatch) => {
   return {
-    updateNewMessageBoby: (text) => {
-      dispatch(updateNewMessageActionCreator(text));
-    },
-    sendMessage: () => {
-      dispatch(addMessageActionCreator());
+    sendMessage: (newMessage) => {
+      dispatch(addMessageActionCreator(newMessage));
     }
   }
 }
@@ -63,7 +59,7 @@ let mapDispatchToProps = (dispatch) => {
 export default compose(
   connect(mapStateToProps,mapDispatchToProps),
   withAuthRedirect
-)(Dialogs)
+)(AddMessageFormRedux)
 
 // let AuthRedirectComponent = withAuthRedirect(Dialogs);
  // const DialogsContainer = connect(mapStateToProps,mapDispatchToProps)(AuthRedirectComponent);

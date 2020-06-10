@@ -1,5 +1,5 @@
-const ADD_MESSAGE = "ADD-MESSAGE";
-const UPDATE_NEW_MESSAGE_TEXT = "UPDATE-NEW-MESSAGE-TEXT";
+const SEND_MESSAGE = "SEND_MESSAGE";
+
 
 let initialState = {
   messages: [
@@ -17,7 +17,7 @@ let initialState = {
     { id: 5, name: "Akzhan5" },
     { id: 6, name: "Akzhan6" },
   ],
-  newMessage: "Write the new message",
+ 
 };
 
 const dialogsReducer = (state = initialState, action) => {
@@ -30,29 +30,20 @@ const dialogsReducer = (state = initialState, action) => {
 
   switch (action.type) {
     
-    case ADD_MESSAGE:
-      let body = state.newMessage;
+    case SEND_MESSAGE:
+      let body = action.newMessage;
       return {
         ...state,
-        newMessage: "", // здесь сверху перезаписываем newmessage;
+  
         messages: [...state.messages, { id: 6, message: body }],
       }; 
-
-    case UPDATE_NEW_MESSAGE_TEXT:
-      return { ...state, newMessage: action.newMessage }; 
-      //здесь мы делаем поверх копию так как мы меняем текс
-      //текст является примитивом
-      // мы сразу написали newMessage вместе спред чтобы перезаписать newMessage
 
     default:
       return state;
   }
 };
 
-export const addMessageActionCreator = () => ({ type: ADD_MESSAGE });
-export const updateNewMessageActionCreator = (text) => ({
-  type: UPDATE_NEW_MESSAGE_TEXT,
-  newMessage: text,
-});
+export const addMessageActionCreator = (newMessage) => ({ type: SEND_MESSAGE,newMessage });
+
 
 export default dialogsReducer;
