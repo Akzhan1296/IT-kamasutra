@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Header from "./header";
-import {auth} from "../../redux/auth-reducer";
+import {auth,logout} from "../../redux/auth-reducer";
 import {connect} from "react-redux";
 
 class HeaderContainer extends Component {
@@ -21,7 +21,8 @@ const mapStateToProps = (state) => ({
 //эти данные из auth-reducer попадает в нашу компаненту
 
 export default connect(mapStateToProps,{
-  auth
+  auth,
+  logout
 })(HeaderContainer);
 // короткая запись mapDispatchToProps
 

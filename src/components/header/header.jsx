@@ -11,7 +11,7 @@ const Header = (props) => {
       <header className = {header}>
         <img src="https://cdn.worldvectorlogo.com/logos/tiktok-logo.svg" alt="img"/>
       <div className={s.loginBlock}>
-        {props.isAuth ? props.login :
+          {props.isAuth ? <div>{props.login} <button onClick={props.logout}> Log out</button> </div>  :
         <NavLink to={"/login"}>
           Login
         </NavLink>}
