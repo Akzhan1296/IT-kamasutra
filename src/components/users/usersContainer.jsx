@@ -1,54 +1,79 @@
 import React from "react";
-import {connect} from "react-redux";
-import {follow, unfollow, setCurrentPage,getUsersThunkCreator} from "../../redux/users-reducer";
+import { connect } from "react-redux";
+import {
+  follow,
+  unfollow,
+  setCurrentPage,
+  getUsersThunkCreator,
+} from "../../redux/users-reducer";
+
+import {
+  getUsers,
+  getPageSize,
+  getTotalUsersCount,
+  getCurrentPage,
+  getIsFetching,
+  getFollowingInProgress,
+} from "../../redux/users-selectors";
 import Users from "./Users";
 import Preloader from "../common/preloader/Preloader";
-import {withAuthRedirect} from "../../hoc/WithAuthRedirect";
-import {compose} from "redux";
-
+// import { withAuthRedirect } from "../../hoc/WithAuthRedirect";
+import { compose } from "redux";
 
 class UsersContainer extends React.Component {
-    componentDidMount() {
-      this.props.getUsersThunkCreator(this.props.currentPage, this.props.pageSize);
-    }
-  
-    onPageChanged = (pageNumber) => {
-
-      this.props.getUsersThunkCreator(pageNumber, this.props.pageSize);
-      this.props.setCurrentPage(pageNumber);
-    };
-  
-    render() {
-      return <>
-        {this.props.isFetching ? <Preloader/> : null}
-            <Users
-            totalUsersCount={this.props.totalUsersCount}
-            pageSize={this.props.pageSize}  
-            currentPage={this.props.currentPage}
-            selectedPage={this.props.selectedPage}
-            onPageChanged={this.onPageChanged}
-            users={this.props.users}
-            follow={this.props.follow}
-            unfollow={this.props.unfollow}
-            
-            followingInProgress={this.props.followingInProgress}
-            />
-        </>
-
-    }
+  componentDidMount() {
+    this.props.getUsersThunkCreator(
+      this.props.currentPage,
+      this.props.pageSize
+    );
   }
 
+  onPageChanged = (pageNumber) => {
+    this.props.getUsersThunkCreator(pageNumber, this.props.pageSize);
+    this.props.setCurrentPage(pageNumber);
+  };
+
+  render() {
+    return (
+      <>
+        {this.props.isFetching ? <Preloader /> : null}
+        <Users
+          totalUsersCount={this.props.totalUsersCount}
+          pageSize={this.props.pageSize}
+          currentPage={this.props.currentPage}
+          selectedPage={this.props.selectedPage}
+          onPageChanged={this.onPageChanged}
+          users={this.props.users}
+          follow={this.props.follow}
+          unfollow={this.props.unfollow}
+          followingInProgress={this.props.followingInProgress}
+        />
+      </>
+    );
+  }
+}
 
 let mapStateToProps = (state) => {
-    return {
-        users: state.usersPage.users, 
-        pageSize: state.usersPage.pageSize,
-        totalUsersCount: state.usersPage.totalUsersCount,
-        currentPage: state.usersPage.currentPage,
-        isFetching: state.usersPage.isFetching,
-        followingInProgress: state.usersPage.followingInProgress
-    }
-}
+  return {
+    users: getUsers(state),
+    pageSize: getPageSize(state),
+    totalUsersCount: getTotalUsersCount(state),
+    currentPage: getCurrentPage(state),
+    isFetching: getIsFetching(state),
+    followingInProgress: getFollowingInProgress(state),
+  };
+};
+
+// let mapStateToProps = (state) => {
+//     return {
+//         users: state.usersPage.users,
+//         pageSize: state.usersPage.pageSize,
+//         totalUsersCount: state.usersPage.totalUsersCount,
+//         currentPage: state.usersPage.currentPage,
+//         isFetching: state.usersPage.isFetching,
+//         followingInProgress: state.usersPage.followingInProgress
+//     }
+// }
 //mapStateToProps сама делает запрос к store получает state и subscribe
 
 // let mapDispatchToProps = (dispatch) => {
@@ -62,7 +87,7 @@ let mapStateToProps = (state) => {
 //          setUsers: (users) => {
 //              dispatch(setUsersAC(users));
 //              //отправляет данные в setUSersAc
-//              //в users-reducer setUsrs(actionCreator) возвращает новый объект с данными из сервера 
+//              //в users-reducer setUsrs(actionCreator) возвращает новый объект с данными из сервера
 //             //Итого диспачется новый объект и попадаем в reducer
 //             },
 //             setCurrentPage: (pageNumber) => {
@@ -77,13 +102,12 @@ let mapStateToProps = (state) => {
 //     }
 // }
 export default compose(
-  connect(mapStateToProps,{
+  connect(mapStateToProps, {
     follow,
     unfollow,
     setCurrentPage,
-    getUsersThunkCreator //находится в reducer 
-}),
-  
+    getUsersThunkCreator, //находится в reducer
+  })
 )(UsersContainer);
 
 //ДО COMPOSE
@@ -95,5 +119,5 @@ export default compose(
 //     getUsersThunkCreator
 // })(withRedirect);
 
-// второй способ обявления mapDisptachToProps 
-//сама создаем callback и делает dispatch  
+// второй способ обявления mapDisptachToProps
+//сама создаем callback и делает dispatch
