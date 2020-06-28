@@ -83,7 +83,7 @@ export default compose(
     setCurrentPage,
     getUsersThunkCreator //находится в reducer 
 }),
-  withAuthRedirect
+  
 )(UsersContainer);
 
 //ДО COMPOSE

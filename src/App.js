@@ -1,5 +1,11 @@
-import React from "react";
+import React, { Component } from "react";
 import { Route } from "react-router-dom";
+//import { auth } from "./redux/auth-reducer";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import {initializeApp} from "./redux/app-reducer"
+
 
 import Login from "./components/Login/Login";
 import HeaderContainer from "./components/header/headerContainer";
@@ -12,24 +18,44 @@ import UsersContainer from "./components/users/usersContainer";
 // import Music from "./components/music/music";
 
 import "./App.css";
+import Preloader from "./components/common/preloader/Preloader";
 
+class App extends Component {
+  componentDidMount() {
+    this.props.initializeApp(); //Использовали thunk
+  }
 
-const App = (props) => {
-  return (
-    <div className="app-wrapper">
-      <HeaderContainer />
-      <Navbar />
-      <div className="app-wrapper-content">
-        <Route exact path="/dialogs" render={() => <DialogsContainer />} />
-        <Route path="/profile/:userId?" render={() => <ProfileContainer />} />
-        <Route path="/users" render={() => <UsersContainer />} />
-        <Route path="/login" render={() => <Login />} />
+  render() {
+    if(!this.props.initialized){
+      return <Preloader/>
+    }
+    return (
+      <div className="app-wrapper">
+        <HeaderContainer />
+        <Navbar />
+        <div className="app-wrapper-content">
+          <Route exact path="/dialogs" render={() => <DialogsContainer />} />
+          <Route path="/profile/:userId?" render={() => <ProfileContainer />} />
+          <Route path="/users" render={() => <UsersContainer />} />
+          <Route path="/login" render={() => <Login />} />
+        </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+}
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    initialized: state.app.initialized
+  }
+}
+
+export default compose(
+  withRouter,
+  connect(mapStateToProps, {
+    initializeApp,
+  })
+)(App);
 
 {
   /* <Route path="/news" component={News} />

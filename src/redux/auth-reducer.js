@@ -15,7 +15,6 @@ const authReducer = (state = initialState, action) => {
   //каждому reducer приходит свой кусочек state
   switch (action.type) {
     case SET_USER_DATA:
-      console.log(action.payload);
       return {
         ...state,
         ...action.payload,
@@ -33,12 +32,13 @@ const setAuthUserData = (userId, email, login, isAuth) => ({
 
 export const auth = () => {
   return (dispatch) => {
-    authAPI.me().then((data) => {
+    return authAPI.me().then((data) => {
       if (data.data.resultCode === 0) {
         let { id, login, email } = data.data.data;
         dispatch(setAuthUserData(id, email, login, true));
       }
     });
+    //then тоже возвращает promise
   };
 };
 
