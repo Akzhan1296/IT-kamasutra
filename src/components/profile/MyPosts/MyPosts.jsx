@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PureComponent } from "react";
 import s from "./MyPosts.module.css";
 import Post from "./Posts/Post";
 import {
@@ -13,27 +13,65 @@ const { postsBlock, postsWrap } = s;
 
 const maxLength10 = maxLengthCreator(10);
 
-const MyPosts = ({ posts, newPostText, addPost, updateNewPostText }) => {
-  let postsElements = posts.map((post, index) => (
-    <Post message={post.message} likeCount={post.likesCount} key={index} />
-  ));
+//
 
-  //до 76 был но потом убрали
-  //let newPostElement = React.createRef(); //Здесь создаеться пустая ссылка Здесь возвращаеться {} с свойством current
-  //когда ref задаем к нужному элементу тогда newPostElement будут ссылаться на нужный элемент
+const MyPosts = React.memo(
+  ({ posts, newPostText, addPost, updateNewPostText }) => {
 
-  let onAddPost = (values) => {
-    addPost(values.newPostText);
-  };
+    console.log('Render YO')
+    // shouldComponentUpdate(nextProps, nextState) {
+    //   return nextProps !== this.props || nextState !== this.state;
+    // }
 
-  return (
-    <div className={postsBlock}>
-      <h3>My posts</h3>
-      <AddNewPostFormRedux onSubmit={onAddPost} />
-      <div className={postsWrap}>{postsElements}</div>
-    </div>
-  );
-};
+    let postsElements = posts.map((post, index) => (
+      <Post message={post.message} likeCount={post.likesCount} key={index} />
+    ));
+
+    let onAddPost = (values) => {
+      addPost(values.newPostText);
+    };
+    return (
+      <div className={postsBlock}>
+        <h3>My posts</h3>
+        <AddNewPostFormRedux onSubmit={onAddPost} />
+        <div className={postsWrap}>{postsElements}</div>
+      </div>
+    );
+
+    //до 76 был но потом убрали
+    //let newPostElement = React.createRef(); //Здесь создаеться пустая ссылка Здесь возвращаеться {} с свойством current
+    //когда ref задаем к нужному элементу тогда newPostElement будут ссылаться на нужный элемент
+  }
+);
+
+//PURE COMPONENT
+
+// class MyPosts extends PureComponent {
+//   // shouldComponentUpdate(nextProps, nextState) {
+//   //   return nextProps !== this.props || nextState !== this.state;
+//   // }
+
+//   render() {
+//     let postsElements = this.props.posts.map((post, index) => (
+//       <Post message={post.message} likeCount={post.likesCount} key={index} />
+//     ));
+
+//     let onAddPost = (values) => {
+//       this.props.addPost(values.newPostText);
+//     };
+//     return (
+//       <div className={postsBlock}>
+//         <h3>My posts</h3>
+//         <AddNewPostFormRedux onSubmit={onAddPost} />
+//         <div className={postsWrap}>{postsElements}</div>
+//       </div>
+//     );
+//   }
+
+//   //до 76 был но потом убрали
+//   //let newPostElement = React.createRef(); //Здесь создаеться пустая ссылка Здесь возвращаеться {} с свойством current
+//   //когда ref задаем к нужному элементу тогда newPostElement будут ссылаться на нужный элемент
+// }
 
 const AddNewPostForm = (props) => {
   return (
