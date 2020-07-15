@@ -1,6 +1,5 @@
-import {usersAPI} from "../api/api";
-import {profileAPI} from "../api/api";
-
+import { usersAPI } from "../api/api";
+import { profileAPI } from "../api/api";
 
 const ADD_POST = "ADD-POST";
 const SET_USER_PROFILE = "SET_USER_PROFILE";
@@ -12,7 +11,7 @@ let initialState = {
     { id: 2, message: "how are u?", likesCount: 11 },
   ],
   profile: null,
-  status: ""
+  status: "",
 };
 
 const profileReducer = (state = initialState, action) => {
@@ -32,66 +31,51 @@ const profileReducer = (state = initialState, action) => {
         posts: [...state.posts, newPost],
       };
 
-
     case SET_STATUS: {
       return { ...state, status: action.status };
-
     }
-
 
     case SET_USER_PROFILE:
       return {
         ...state,
-        profile: action.profile
-      }
+        profile: action.profile,
+      };
 
     default:
       return state;
   }
 };
 
-export const addPostActionCreator = (newPostText) => ({ type: ADD_POST,newPostText });
+export const addPostActionCreator = (newPostText) => ({
+  type: ADD_POST,
+  newPostText,
+});
+export const setStatusAC = (status) => ({ type: SET_STATUS, status });
+export const setUserProfile = (profile) => ({
+  type: SET_USER_PROFILE,
+  profile,
+});
 
-export const setStatusAC = (status) => {
-  return {
-    type: SET_STATUS, status
-  }
+//ТАК КАК ЭТО У НАС AJAX ЗАПРОС СОЗДАЕМ THUNK
+export const getUsersProfile = (userId) => {
+  return async (dispatch) => {
+    let response = await usersAPI.getProfile(userId);
+    dispatch(setUserProfile(response));
+  };
 };
-//ТАК КАК ЭТО У НАС AJAX ЗАПРОС СОЗДАЕМ THUNK 
 
 export const getStatus = (userId) => {
-  return (dispatch) => {
-    profileAPI.getStatus(userId)
-    .then((response) => { 
-      dispatch(setStatusAC(response.data)); //data.data
-    }); 
-  }
-}
+  return async (dispatch) => {
+    let response = await profileAPI.getStatus(userId);
+    dispatch(setStatusAC(response.data)); //data.data
+  };
+};
 
 export const updateStatus = (status) => {
-  return (dispatch) => {
-    profileAPI.updateStatus(status)
-    .then((response) => { 
-      console.log(response)
-      if(response.data.resultCode === 0)
-
-
-      dispatch(setStatusAC(status));
-    }); 
-  }
-}
-
-
-
-const setUserProfile = (profile) => ({ type: SET_USER_PROFILE, profile });
-export const getUsersProfile = (userId) => {
-  return (dispatch) => {
-    usersAPI.getProfile(userId)
-    .then((data) => { 
-      dispatch(setUserProfile(data));
-    }); 
-  }
-}
-
+  return async (dispatch) => {
+    let response = await profileAPI.updateStatus(status);
+    if (response.data.resultCode === 0) dispatch(setStatusAC(status));
+  };
+};
 
 export default profileReducer;

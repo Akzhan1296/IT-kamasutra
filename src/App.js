@@ -1,11 +1,9 @@
 import React, { Component } from "react";
 import { Route } from "react-router-dom";
-//import { auth } from "./redux/auth-reducer";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
-import {initializeApp} from "./redux/app-reducer"
-
+import { initializeApp } from "./redux/app-reducer";
 
 import Login from "./components/Login/Login";
 import HeaderContainer from "./components/header/headerContainer";
@@ -26,8 +24,8 @@ class App extends Component {
   }
 
   render() {
-    if(!this.props.initialized){
-      return <Preloader/>
+    if (!this.props.initialized) {
+      return <Preloader />;
     }
     return (
       <div className="app-wrapper">
@@ -46,9 +44,9 @@ class App extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    initialized: state.app.initialized
-  }
-}
+    initialized: state.app.initialized,
+  };
+};
 
 export default compose(
   withRouter,

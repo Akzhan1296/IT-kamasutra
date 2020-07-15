@@ -8,13 +8,12 @@ import {
 } from "../../redux/users-reducer";
 
 import {
-  getUsers,
   getPageSize,
   getTotalUsersCount,
   getCurrentPage,
   getIsFetching,
   getFollowingInProgress,
-  getUsersSuperSelector
+  getUsersSuperSelector,
 } from "../../redux/users-selectors";
 import Users from "./Users";
 import Preloader from "../common/preloader/Preloader";
@@ -22,14 +21,13 @@ import { compose } from "redux";
 
 class UsersContainer extends React.Component {
   componentDidMount() {
-    this.props.getUsersThunkCreator(
-      this.props.currentPage,
-      this.props.pageSize
-    );
+    let { currentPage, pageSize } = this.props;
+    this.props.getUsersThunkCreator(currentPage, pageSize);
   }
 
   onPageChanged = (pageNumber) => {
-    this.props.getUsersThunkCreator(pageNumber, this.props.pageSize);
+    let { pageSize } = this.props;
+    this.props.getUsersThunkCreator(pageNumber, pageSize);
     this.props.setCurrentPage(pageNumber);
   };
 

@@ -3,20 +3,17 @@ import s from "./profileInfo.module.css";
 import Preloader from "../../common/preloader/Preloader";
 import ProfileStatusWithHooks from "./profileStatusWithHooks";
 
-const ProfileInfo = (props) => {
-  if(!props.profile){
-    return <Preloader/> 
+const ProfileInfo = ({ profile, status, updateStatus }) => {
+  if (!profile) {
+    return <Preloader />;
   }
 
-  const {descrBlock} = s;
+  const { descrBlock } = s;
   return (
     <div>
-      {/* <div>
-        <img src="https://images.pexels.com/photos/956981/milky-way-starry-sky-night-sky-star-956981.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" />
-      </div> */}
-      <div  className={descrBlock}>
-        <img src={props.profile.photos.large} alt="profile"/>
-        <ProfileStatusWithHooks status={props.status} updateStatus={props.updateStatus} />
+      <div className={descrBlock}>
+        <img src={profile.photos.large} alt="profile" />
+        <ProfileStatusWithHooks status={status} updateStatus={updateStatus} />
       </div>
     </div>
   );
