@@ -4,6 +4,7 @@ import { profileAPI } from "../api/api";
 const ADD_POST = "ADD-POST";
 const SET_USER_PROFILE = "SET_USER_PROFILE";
 const SET_STATUS = "SET_STATUS";
+const SAVE_PHOTO_SUCCESS = "SAVE_PHOTO_SUCCESS";
 
 let initialState = {
   posts: [
@@ -41,6 +42,10 @@ const profileReducer = (state = initialState, action) => {
         profile: action.profile,
       };
 
+    case SAVE_PHOTO_SUCCESS: {
+      return {...state, profile: {...state.profile, photos: action.photos}}
+    }
+
     default:
       return state;
   }
@@ -55,6 +60,8 @@ export const setUserProfile = (profile) => ({
   type: SET_USER_PROFILE,
   profile,
 });
+export const savePhotoSuccess = (photos) => ({type: SAVE_PHOTO_SUCCESS,photos })
+
 
 //ТАК КАК ЭТО У НАС AJAX ЗАПРОС СОЗДАЕМ THUNK
 export const getUsersProfile = (userId) => {
@@ -75,6 +82,13 @@ export const updateStatus = (status) => {
   return async (dispatch) => {
     let response = await profileAPI.updateStatus(status);
     if (response.data.resultCode === 0) dispatch(setStatusAC(status));
+  };
+};
+
+export const savePhoto = (file ) => {
+  return async (dispatch) => {
+    let response = await profileAPI.savePhoto(file);
+    if (response.data.resultCode === 0) dispatch(savePhotoSuccess(response.data.data.photos));
   };
 };
 

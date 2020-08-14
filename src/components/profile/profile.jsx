@@ -6,8 +6,14 @@ import s from "./profile.module.css";
 const Profile = (props) => {
   return (
     <div>
-      <ProfileInfo profile={props.profile} status={props.status} updateStatus={props.updateStatus} />
-      <MyPostsContainer/>
+      <ProfileInfo
+        savePhoto={props.savePhoto}
+        isOwner={props.isOwner}
+        profile={props.profile}
+        status={props.status}
+        updateStatus={props.updateStatus}
+      />
+      <MyPostsContainer />
     </div>
   );
 };
