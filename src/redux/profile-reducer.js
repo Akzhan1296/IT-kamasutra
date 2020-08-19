@@ -1,5 +1,6 @@
 import { usersAPI } from "../api/api";
 import { profileAPI } from "../api/api";
+import { stopSubmit } from "redux-form";
 
 const ADD_POST = "ADD-POST";
 const SET_USER_PROFILE = "SET_USER_PROFILE";
@@ -43,7 +44,7 @@ const profileReducer = (state = initialState, action) => {
       };
 
     case SAVE_PHOTO_SUCCESS: {
-      return {...state, profile: {...state.profile, photos: action.photos}}
+      return { ...state, profile: { ...state.profile, photos: action.photos } };
     }
 
     default:
@@ -60,8 +61,10 @@ export const setUserProfile = (profile) => ({
   type: SET_USER_PROFILE,
   profile,
 });
-export const savePhotoSuccess = (photos) => ({type: SAVE_PHOTO_SUCCESS,photos })
-
+export const savePhotoSuccess = (photos) => ({
+  type: SAVE_PHOTO_SUCCESS,
+  photos,
+});
 
 //ТАК КАК ЭТО У НАС AJAX ЗАПРОС СОЗДАЕМ THUNK
 export const getUsersProfile = (userId) => {
@@ -85,11 +88,28 @@ export const updateStatus = (status) => {
   };
 };
 
-export const savePhoto = (file ) => {
+export const savePhoto = (file) => {
   return async (dispatch) => {
     let response = await profileAPI.savePhoto(file);
-    if (response.data.resultCode === 0) dispatch(savePhotoSuccess(response.data.data.photos));
+    if (response.data.resultCode === 0)
+      dispatch(savePhotoSuccess(response.data.data.photos));
   };
 };
+
+export const saveProfile = (profile) => {
+  return async (dispatch, getState) => {
+    const userId = getState().auth.userId;
+    let response = await profileAPI.saveProfile(profile);
+
+    if (response.data.resultCode === 0) {
+      dispatch(getUsersProfile(userId));
+    } else {
+      dispatch(stopSubmit("edit-profile", {_error: response.data.messages[0] }));
+      return Promise.reject(response.data.messages[0])
+    }
+  };
+};
+
+//saveProfile возвращает promise так как функция await
 
 export default profileReducer;

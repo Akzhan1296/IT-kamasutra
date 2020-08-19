@@ -1,5 +1,5 @@
 import React from "react";
-import { Textarea } from "../../common/FormsControls/FormsControls";
+import { TextArea } from "../../common/FormsControls/FormsControls";
 import { Field, reduxForm } from "redux-form";
 import {
   required,
@@ -12,7 +12,7 @@ const AddMessageForm = (props) => {
   return (
     <form onSubmit={props.handleSubmit} placeholder="Enter your name">
       <Field
-        component={Textarea}
+        component={TextArea}
         validate={[required, maxLength50]}
         name="newMessage"
       />

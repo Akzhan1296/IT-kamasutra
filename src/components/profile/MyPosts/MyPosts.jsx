@@ -5,7 +5,7 @@ import {
   required,
   maxLengthCreator,
 } from "../../../utils/validators/validators";
-import { Textarea } from "../../common/FormsControls/FormsControls";
+import { TextArea } from "../../common/FormsControls/FormsControls";
 //import {updateNewPostActionCreator, addPostActionCreator} from "../../../redux/profile-reducer"
 import { Field, reduxForm } from "redux-form";
 
@@ -79,7 +79,7 @@ const AddNewPostForm = (props) => {
       <div>
         <Field
           name="newPostText"
-          component={Textarea}
+          component={TextArea}
           validate={[required, maxLength10]}
           placeholder="Post message"
         />

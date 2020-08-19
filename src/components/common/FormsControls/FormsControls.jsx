@@ -12,7 +12,7 @@ const FormControl = ({ input, meta: {touched,error}, children}) => {
   );
 };
 
-export const Textarea = (props) => {
+export const TextArea = (props) => {
   const { input, meta, child, ...restprops } = props;
   return (
     <FormControl {...props}>

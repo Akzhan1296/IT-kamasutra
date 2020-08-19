@@ -9,6 +9,7 @@ import { Redirect } from "react-router-dom";
 import style from "./../common/FormsControls/FormsControls.module.css";
 
 const LoginForm = ({ handleSubmit, error }) => {
+  console.log(error)
   return (
     <form onSubmit={handleSubmit}>
       {createField("Email", "email", [required], Input)}
@@ -39,7 +40,6 @@ const LoginReduxForm = reduxForm({
 
 const Login = (props) => {
   const onSubmit = (formData) => {
-    console.log(formData);
     props.login(formData.email, formData.password, formData.rememberMe);
     //Здесь login другая, connect вызывает другой callback который имеет одно и тоже имя который приходит с reducer
   };
