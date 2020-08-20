@@ -1,5 +1,5 @@
 import React from "react";
-import {reduxForm } from "redux-form";
+import { reduxForm } from "redux-form";
 import { Input } from "../../components/common/FormsControls/FormsControls";
 import { required } from "../../utils/validators/validators";
 import { connect } from "react-redux";
@@ -8,8 +8,8 @@ import { createField } from "../common/FormsControls/FormsControls";
 import { Redirect } from "react-router-dom";
 import style from "./../common/FormsControls/FormsControls.module.css";
 
-const LoginForm = ({ handleSubmit, error }) => {
-  console.log(error)
+const LoginForm = ({ handleSubmit, error, captchaUrl }) => {
+  console.log(captchaUrl);
   return (
     <form onSubmit={handleSubmit}>
       {createField("Email", "email", [required], Input)}
@@ -24,6 +24,9 @@ const LoginForm = ({ handleSubmit, error }) => {
         { type: "checkbox" },
         "Remember me"
       )}
+
+      {captchaUrl && <img src={captchaUrl} alt="captchaUrl" />}
+      {captchaUrl && createField("sybmbols", "captcha", [required], Input, {})}
       {error && <div className={style.formSummaryError}>{error}</div>}
 
       <div>
@@ -40,7 +43,12 @@ const LoginReduxForm = reduxForm({
 
 const Login = (props) => {
   const onSubmit = (formData) => {
-    props.login(formData.email, formData.password, formData.rememberMe);
+    props.login(
+      formData.email,
+      formData.password,
+      formData.rememberMe,
+      formData.captcha
+    );
     //Здесь login другая, connect вызывает другой callback который имеет одно и тоже имя который приходит с reducer
   };
 
@@ -51,12 +59,13 @@ const Login = (props) => {
   return (
     <div>
       <h1>Login</h1>
-      <LoginReduxForm onSubmit={onSubmit} />
+      <LoginReduxForm onSubmit={onSubmit} captchaUrl={props.captchaUrl} />
     </div>
   );
 };
 
 let mapStateToProps = (state) => ({
+  captchaUrl: state.auth.captchaUrl,
   isAuth: state.auth.isAuth,
 });
 
