@@ -1,12 +1,9 @@
 import React from "react";
 import AddMessageFormRedux from "./dialogs";
-import {
-  addMessageActionCreator,
-} from "../../redux/dialogs-reducer";
-import {withAuthRedirect} from "../../hoc/WithAuthRedirect";
-import {connect} from "react-redux";
-import {compose} from 'redux'
-
+import { sendMessageActionCreator } from "../../redux/dialogs-reducer";
+import { withAuthRedirect } from "../../hoc/WithAuthRedirect";
+import { connect } from "react-redux";
+import { compose } from "redux";
 
 //Старая версия когда мы сами делали контейнерную компоненту
 // const DialogsContainer = () => {
@@ -14,7 +11,7 @@ import {compose} from 'redux'
 //     <StoreContext.Consumer>
 //       {(store) => {
 //         let state = store.getState().dialogsPage;
-        
+
 //         const onSendMessageClick = () => {
 //           store.dispatch(addMessageActionCreator());
 //         };
@@ -41,31 +38,29 @@ import {compose} from 'redux'
 let mapStateToProps = (state) => {
   return {
     dialogsPage: state.dialogsPage,
-  }
-}
-// нужна для настройки callBack для функций 
+  };
+};
+// нужна для настройки callBack для функций
 
-
-//connect автоматом сам засунет dispatch 
+//connect автоматом сам засунет dispatch
 //а именно store.dispatch.bind(store)
 let mapDispatchToProps = (dispatch) => {
   return {
     sendMessage: (newMessage) => {
-      dispatch(addMessageActionCreator(newMessage));
-    }
-  }
-}
+      dispatch(sendMessageActionCreator(newMessage));
+    },
+  };
+};
 
 export default compose(
-  connect(mapStateToProps,mapDispatchToProps),
+  connect(mapStateToProps, mapDispatchToProps),
   withAuthRedirect
-)(AddMessageFormRedux)
+)(AddMessageFormRedux);
 
 // let AuthRedirectComponent = withAuthRedirect(Dialogs);
- // const DialogsContainer = connect(mapStateToProps,mapDispatchToProps)(AuthRedirectComponent);
+// const DialogsContainer = connect(mapStateToProps,mapDispatchToProps)(AuthRedirectComponent);
 // export default DialogsContainer;
 
-
-//Здесь мы делаем connect с redux 
-//Здесь нету классового компонента так как пока что мы не делаем запрос на сервер 
+//Здесь мы делаем connect с redux
+//Здесь нету классового компонента так как пока что мы не делаем запрос на сервер
 //Комментарий от 68 урока

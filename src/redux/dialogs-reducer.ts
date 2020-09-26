@@ -1,5 +1,14 @@
 const SEND_MESSAGE = "SEND_MESSAGE";
 
+type Dialog = {
+  id: number,
+  name: string
+}
+
+type Message = {
+  id: number,
+  message: string
+}
 
 let initialState = {
   messages: [
@@ -8,7 +17,7 @@ let initialState = {
     { id: 3, message: "yo" },
     { id: 4, message: "yo" },
     { id: 5, message: "yo" },
-  ],
+  ] as Array<Message>,
   dialogs: [
     { id: 1, name: "Akzhan" },
     { id: 2, name: "Akzhan2" },
@@ -16,11 +25,14 @@ let initialState = {
     { id: 4, name: "Akzhan4" },
     { id: 5, name: "Akzhan5" },
     { id: 6, name: "Akzhan6" },
-  ],
- 
+  ] as Array<Dialog>,
+
 };
 
-const dialogsReducer = (state = initialState, action) => {
+export type InitialStateType = typeof initialState
+
+
+const dialogsReducer = (state = initialState, action: any): InitialStateType => {
   // let stateCopy = {...state};
   //   stateCopy.messages = [...state.messages];
 
@@ -29,21 +41,26 @@ const dialogsReducer = (state = initialState, action) => {
   //  };  //одно и тоже с коментом но написали в одну стрончку
 
   switch (action.type) {
-    
+
     case SEND_MESSAGE:
-      let body = action.newMessage;
+      let body = action.newMessageBody;
       return {
         ...state,
-  
+
         messages: [...state.messages, { id: 6, message: body }],
-      }; 
+      };
 
     default:
       return state;
   }
 };
 
-export const addMessageActionCreator = (newMessage) => ({ type: SEND_MESSAGE,newMessage });
+type sendMessageActionCreatorType = {
+  type: typeof SEND_MESSAGE,
+  newMessageBody: string
+}
+
+export const sendMessageActionCreator = (newMessageBody: string): sendMessageActionCreatorType => ({ type: SEND_MESSAGE, newMessageBody });
 
 
 export default dialogsReducer;
