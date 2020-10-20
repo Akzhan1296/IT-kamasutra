@@ -2,9 +2,21 @@ import React from "react";
 import styles from "./users.module.css";
 import userPhoto from "../../assets/imgs/userPhoto.jpg";
 import { NavLink } from "react-router-dom";
+import {UserType} from "../../types/types"
 
-const User = ({ user, followingInProgress, follow, unfollow }) => {
-  
+type PropsType = {
+  user: UserType,
+  followingInProgress: Array<number>,
+  follow: (userId: number) => void
+  unfollow: (userId: number) => void
+};
+
+const User: React.FC<PropsType> = ({
+  user,
+  followingInProgress,
+  follow,
+  unfollow,
+}) => {
   return (
     <div key={user.id}>
       <span>
@@ -13,7 +25,7 @@ const User = ({ user, followingInProgress, follow, unfollow }) => {
             <img
               className={styles.userPhoto}
               src={user.photos.small != null ? user.photos.small : userPhoto}
-              alt={user.id}
+              alt={user.id.toString()}
             />
           </NavLink>
         </div>

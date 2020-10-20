@@ -5,16 +5,43 @@ import {
   getStatus,
   updateStatus,
   savePhoto,
-  saveProfile
+  saveProfile,
 } from "../../redux/profile-reducer";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-// import {withAuthRedirect} from "../../hoc/WithAuthRedirect";
+import { RouteComponentProps, withRouter } from "react-router-dom";
 import { compose } from "redux";
+import { ProfileType } from "../../types/types";
+import { AppStateType } from "../../redux/redux-store";
 
-class ProfileContainer extends Component {
+type PathParamsType = {
+  userId: string;
+};
+
+type PropsType = MapStatePropsType &
+  MapDispatchPropsType &
+  OwnPropsType &
+  RouteComponentProps<PathParamsType>;
+
+type MapStatePropsType = {
+  profile: ProfileType | null;
+  status: string;
+  authorizedUserId: number | null;
+  isAuth: boolean;
+};
+
+type MapDispatchPropsType = {
+  getUsersProfile: (userId: number) => void;
+  getStatus: (userId: number) => void;
+  updateStatus: (status: string) => void;
+  savePhoto: (file: File) => void;
+  saveProfile: (profile: ProfileType) => void;
+};
+
+type OwnPropsType = {};
+
+class ProfileContainer extends Component<PropsType> {
   refreshProfile() {
-    let userId = this.props.match.params.userId; //withRouter
+    let userId: number | null = +this.props.match.params.userId; //withRouter
     if (!userId) {
       userId = this.props.authorizedUserId;
       if (!userId) {
@@ -22,38 +49,42 @@ class ProfileContainer extends Component {
       }
     }
 
-    this.props.getUsersProfile(userId);
-    this.props.getStatus(userId);
+    if(!userId){
+      console.error("ID should exists in URI params or in state ('authorizedUserId')");
+    } else {
+      this.props.getUsersProfile(userId);
+      this.props.getStatus(userId);
+    }
+
+
   }
 
   componentDidMount() {
     this.refreshProfile();
   }
 
-  componentDidUpdate(prevProps){
-    if(prevProps.match.params.userId !== this.props.match.params.userId){
+  componentDidUpdate(prevProps: PropsType) {
+    if (prevProps.match.params.userId !== this.props.match.params.userId) {
       this.refreshProfile();
     }
-    
   }
 
   render() {
     return (
       <Profile
-        // {...this.props}
-        isOwner={!this.props.match.params.userId} // !! change to true 
+        {...this.props}
+        isOwner={!this.props.match.params.userId} // !! change to true
         profile={this.props.profile}
         status={this.props.status}
         updateStatus={this.props.updateStatus}
         savePhoto={this.props.savePhoto}
         saveProfile={this.props.saveProfile}
       />
-      //this.props.profile => state.profilepage.profile  =>  profilePage: profileReducer,
     );
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: AppStateType): MapStatePropsType => {
   return {
     profile: state.profilePage.profile,
     status: state.profilePage.status,
@@ -68,10 +99,9 @@ export default compose(
     getStatus,
     updateStatus,
     savePhoto,
-    saveProfile
+    saveProfile,
   }),
   withRouter
-  // withAuthRedirect
 )(ProfileContainer);
 
 //если просто передать как объект MDTH то тогда connect сама обернет actionCreator в disptahc и передаст в store
