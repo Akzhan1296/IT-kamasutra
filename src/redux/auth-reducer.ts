@@ -1,6 +1,8 @@
 
-import { authAPI,securityAPI } from "../api/api";
+import { authAPI, securityAPI } from "../api/api";
 import { stopSubmit } from "redux-form";
+import { ResultCodeEnum, ResultCodeForCaptcha } from "../api/api"
+
 
 const SET_USER_DATA = "samurai-network /auth/SET_USER_DATA";
 const GET_CAPTCHA_URL_SUCCESS = "samurai-network /auth/GET_CAPTCHA_URL_SUCCESS";
@@ -25,7 +27,7 @@ let initialState = {
 export type InitialStateType = typeof initialState;
 
 
-const authReducer = (state = initialState, action: any):InitialStateType  => {
+const authReducer = (state = initialState, action: any): InitialStateType => {
   //каждому reducer приходит свой кусочек state
   switch (action.type) {
     case SET_USER_DATA:
@@ -61,22 +63,23 @@ const setAuthUserData = (userId: number | null, email: string | null, login: str
 
 type getCaptchaUrlSuccessActionType = {
   type: typeof GET_CAPTCHA_URL_SUCCESS
-  payload: {captchaUrl: string}
+  payload: { captchaUrl: string }
 }
 
-const getCaptchaUrlSuccess  = (captchaUrl:string ): getCaptchaUrlSuccessActionType => ({
+const getCaptchaUrlSuccess = (captchaUrl: string): getCaptchaUrlSuccessActionType => ({
   type: GET_CAPTCHA_URL_SUCCESS,
-  payload: {captchaUrl}
+  payload: { captchaUrl }
 });
 
 
 
 export const getAuthUserData = () => {
   return async (dispatch: any) => {
-    let response = await authAPI.me();
+    let meData = await authAPI.me();
 
-    if (response.data.resultCode === 0) {
-      let { id, login, email } = response.data.data;
+
+    if (meData.resultCode === ResultCodeEnum.Success) {
+      let { id, login, email } = meData.data;
       dispatch(setAuthUserData(id, email, login, true));
     }
 
@@ -86,18 +89,18 @@ export const getAuthUserData = () => {
 
 export const login = (email: string, password: string, rememberMe: boolean, captcha: string) => {
   return async (dispatch: any) => {
-    let response = await authAPI.login(email, password, rememberMe, captcha);
+    let lodinData = await authAPI.login(email, password, rememberMe, captcha);
 
-    if (response.data.resultCode === 0) {
+    if (lodinData.resultCode === ResultCodeEnum.Success) {
       dispatch(getAuthUserData());
     } else {
-      if(response.data.resultCode === 10) {
+      if (lodinData.resultCode === ResultCodeForCaptcha.CaptchaIsRequired) {
         dispatch(getCaptchaUrl());
       }
 
       let message =
-        response.data.messages.length > 0
-          ? response.data.messages[0]
+        lodinData.messages.length > 0
+          ? lodinData.messages[0]
           : "Some error";
       dispatch(stopSubmit("login", { _error: message }));
     }

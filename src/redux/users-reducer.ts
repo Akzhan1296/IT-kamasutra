@@ -137,7 +137,6 @@ export const getUsersThunkCreator = (page: number, pageSize: number): ThunkType 
   return async (dispatch, getState) => {
     dispatch(toggleIsFetching(true));
     let response = await usersAPI.getUsers(page, pageSize);
-
     dispatch(toggleIsFetching(false));
     dispatch(setUsers(response.items));
     dispatch(setTotalUsersCount(response.totalCount));
