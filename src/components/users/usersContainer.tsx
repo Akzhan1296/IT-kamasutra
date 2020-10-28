@@ -7,7 +7,7 @@ import { UserType } from "../../types/types";
 import {
   follow,
   unfollow,
-  setCurrentPage,
+  //setCurrentPage,
   getUsersThunkCreator,
 } from "../../redux/users-reducer";
 
@@ -38,7 +38,7 @@ type MapStatePropsType = {
 type MapDispatchPropsType = {
   unfollow: (userId: number) => void
   follow: (userId: number) => void
-  setCurrentPage: (pageNumber: number) => void;
+  //setCurrentPage: (pageNumber: number) => void;
   getUsersThunkCreator: (currentPage: number, pageSize: number) => void;
 }
 
@@ -58,7 +58,7 @@ class UsersContainer extends React.Component<PropsType> {
   onPageChanged = (pageNumber: number) => {
     let { pageSize } = this.props;
     this.props.getUsersThunkCreator(pageNumber, pageSize);
-    this.props.setCurrentPage(pageNumber);
+    //this.props.setCurrentPage(pageNumber);
   };
 
   render() {
@@ -134,7 +134,7 @@ export default compose(
   connect<MapStatePropsType,MapDispatchPropsType,OwnPropsType, AppStateType>(mapStateToProps, {
     follow,
     unfollow,
-    setCurrentPage,
+    //setCurrentPage,
     getUsersThunkCreator, //находится в reducer
   })
 )(UsersContainer);
