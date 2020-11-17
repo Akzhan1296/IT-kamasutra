@@ -1,12 +1,11 @@
-import { usersAPI } from "../api/api";
-import { profileAPI } from "../api/api";
+import { profileAPI } from "../api/profile-api";
 import { stopSubmit } from "redux-form";
 import { ThunkAction } from 'redux-thunk';
 import { AppStateType } from './redux-store';
 import { Dispatch } from 'redux'
 import {PostType, PhotosType, ProfileType} from "../types/types"
 
-
+ 
 const ADD_POST = "ADD-POST";
 const SET_USER_PROFILE = "SET_USER_PROFILE";
 const SET_STATUS = "SET_STATUS";
@@ -109,23 +108,23 @@ type DispatchType = Dispatch<ActionsTypes>
 //ТАК КАК ЭТО У НАС AJAX ЗАПРОС СОЗДАЕМ THUNK
 export const getUsersProfile = (userId: number):ThunkType => {
   return async (dispatch:DispatchType) => {
-    let response = await usersAPI.getProfile(userId);
+    let response = await profileAPI.getProfile(userId);
     dispatch(setUserProfile(response));
   };
 };
 
 export const getStatus = (userId: number):ThunkType => {
   return async (dispatch:DispatchType) => {
-    let response = await profileAPI.getStatus(userId);
-    dispatch(setStatusAC(response.data)); //data.data
+    let data = await profileAPI.getStatus(userId);
+    dispatch(setStatusAC(data)); //data.data
   };
 };
 
 export const updateStatus = (status: string):ThunkType => {
   return async (dispatch:DispatchType) => {
     try {
-      let response = await profileAPI.updateStatus(status);
-      if (response.data.resultCode === 0) dispatch(setStatusAC(status));
+      let data = await profileAPI.updateStatus(status);
+      if (data.resultCode === 0) dispatch(setStatusAC(status));
     } catch (error) {
       console.error(error)
     }
@@ -143,13 +142,13 @@ export const savePhoto = (file: any):ThunkType => {
 export const saveProfile = (profile: ProfileType) => {
   return async (dispatch: any, getState: any) => {
     const userId = getState().auth.userId;
-    let response = await profileAPI.saveProfile(profile);
+    let data = await profileAPI.saveProfile(profile);
 
-    if (response.data.resultCode === 0) {
+    if (data.resultCode === 0) {
       dispatch(getUsersProfile(userId));
     } else {
-      dispatch(stopSubmit("edit-profile", { _error: response.data.messages[0] }));
-      return Promise.reject(response.data.messages[0])
+      dispatch(stopSubmit("edit-profile", { _error: data.messages[0] }));
+      return Promise.reject(data.messages[0])
     }
   };
 };

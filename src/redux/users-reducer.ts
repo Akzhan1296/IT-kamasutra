@@ -1,5 +1,5 @@
 import { AppStateType, InferActionsTypes } from './redux-store';
-import { usersAPI } from "../api/api";
+import { usersAPI } from "../api/users-api";
 import { updateObjectinArray } from "../utils/object-helpers"
 import { UserType } from "../types/types"
 
@@ -63,9 +63,6 @@ const usersReducer = (state = initialState, action: ActionsTypes): InitialState 
     case 'TOGGLE_IS_FOLLOWING_PROGRESS':
       return {
         ...state,
-        // followingInProgress: action.isFetching
-        //   ? [...state.followingInProgress, action.userId]
-        //   : [state.followingInProgress.filter((id) => id !== action.userId)],
         followingInProgress: action.isFetching
           ? [...state.followingInProgress, action.userId]
           : state.followingInProgress.filter(id => id !== action.userId)
