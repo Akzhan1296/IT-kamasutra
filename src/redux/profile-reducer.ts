@@ -1,18 +1,7 @@
 import { profileAPI } from "../api/profile-api";
-import { stopSubmit } from "redux-form";
-import { ThunkAction } from 'redux-thunk';
-import { AppStateType } from './redux-store';
-import { Dispatch } from 'redux'
-import {PostType, PhotosType, ProfileType} from "../types/types"
-
- 
-const ADD_POST = "ADD-POST";
-const SET_USER_PROFILE = "SET_USER_PROFILE";
-const SET_STATUS = "SET_STATUS";
-const SAVE_PHOTO_SUCCESS = "SAVE_PHOTO_SUCCESS";
-
-
-
+import { stopSubmit, FormAction } from "redux-form";
+import { PostType, PhotosType, ProfileType } from "../types/types"
+import { InferActionsTypes, BaseThunkType } from "./redux-store"
 
 
 let initialState = {
@@ -25,15 +14,12 @@ let initialState = {
   newPostText: ''
 };
 
-export type InitialStateType = typeof initialState
 
-
-
-const profileReducer = (state = initialState, action: ActionsTypes): InitialStateType => {
+const profileReducer = (state = initialState, action: ActionsType): InitialStateType => {
   //каждому reducer приходит свой кусочек state
 
   switch (action.type) {
-    case ADD_POST:
+    case "SN/PROFILE/ADD-POST":
       let newPost = {
         id: 5,
         message: action.newPostText,
@@ -46,17 +32,17 @@ const profileReducer = (state = initialState, action: ActionsTypes): InitialStat
         posts: [...state.posts, newPost],
       };
 
-    case SET_STATUS: {
+    case "SN/PROFILE/SET_STATUS": {
       return { ...state, status: action.status };
     }
 
-    case SET_USER_PROFILE:
+    case "SN/PROFILE/SET_USER_PROFILE":
       return {
         ...state,
         profile: action.profile,
       };
 
-    case SAVE_PHOTO_SUCCESS: {
+    case "SN/PROFILE/SAVE_PHOTO_SUCCESS": {
       return { ...state, profile: { ...state.profile, photos: action.photos } as ProfileType };
     }
 
@@ -65,94 +51,84 @@ const profileReducer = (state = initialState, action: ActionsTypes): InitialStat
   }
 };
 
-type ActionsTypes = AddPostActionCreatorType | SetStatusACType | SetUserProfile | savePhotoSuccessActiontype;
-
-type AddPostActionCreatorType = {
-  type: typeof ADD_POST,
-  newPostText: string
+//actions
+export const actions = {
+  addPostActionCreator: (newPostText: string) => ({
+    type: "SN/PROFILE/ADD-POST",
+    newPostText,
+  } as const),
+  setStatusAC: (status: string) => ({ type: "SN/PROFILE/SET_STATUS", status } as const),
+  setUserProfile: (profile: ProfileType) => ({
+    type: "SN/PROFILE/SET_USER_PROFILE",
+    profile,
+  } as const),
+  savePhotoSuccess: (photos: PhotosType) => ({
+    type: "SN/PROFILE/SAVE_PHOTO_SUCCESS",
+    photos,
+  } as const)
 }
-export const addPostActionCreator = (newPostText: string): AddPostActionCreatorType => ({
-  type: ADD_POST,
-  newPostText,
-});
-
-type SetStatusACType = {
-  type: typeof SET_STATUS,
-  status: string
-}
-export const setStatusAC = (status: string): SetStatusACType => ({ type: SET_STATUS, status });
-
-type SetUserProfile = {
-  type: typeof SET_USER_PROFILE,
-  profile: ProfileType
-}
-export const setUserProfile = (profile: ProfileType): SetUserProfile => ({
-  type: SET_USER_PROFILE,
-  profile,
-});
-
-type savePhotoSuccessActiontype = {
-  type: typeof SAVE_PHOTO_SUCCESS,
-  photos: PhotosType
-}
-export const savePhotoSuccess = (photos: PhotosType): savePhotoSuccessActiontype => ({
-  type: SAVE_PHOTO_SUCCESS,
-  photos,
-});
 
 
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>
-type DispatchType = Dispatch<ActionsTypes>
-
-
-//ТАК КАК ЭТО У НАС AJAX ЗАПРОС СОЗДАЕМ THUNK
-export const getUsersProfile = (userId: number):ThunkType => {
-  return async (dispatch:DispatchType) => {
+//thunks
+export const getUsersProfile = (userId: number): ThunkType => {
+  return async (dispatch) => {
     let response = await profileAPI.getProfile(userId);
-    dispatch(setUserProfile(response));
+    dispatch(actions.setUserProfile(response));
   };
 };
 
-export const getStatus = (userId: number):ThunkType => {
-  return async (dispatch:DispatchType) => {
+export const getStatus = (userId: number): ThunkType => {
+  return async (dispatch) => {
     let data = await profileAPI.getStatus(userId);
-    dispatch(setStatusAC(data)); //data.data
+    dispatch(actions.setStatusAC(data)); //data.data
   };
 };
 
-export const updateStatus = (status: string):ThunkType => {
-  return async (dispatch:DispatchType) => {
+export const updateStatus = (status: string): ThunkType => {
+  return async (dispatch) => {
     try {
       let data = await profileAPI.updateStatus(status);
-      if (data.resultCode === 0) dispatch(setStatusAC(status));
+      if (data.resultCode === 0) dispatch(actions.setStatusAC(status));
     } catch (error) {
       console.error(error)
     }
   };
 };
 
-export const savePhoto = (file: any):ThunkType => {
-  return async (dispatch:DispatchType) => {
+export const savePhoto = (file: File): ThunkType => {
+  return async (dispatch) => {
     let response = await profileAPI.savePhoto(file);
     if (response.data.resultCode === 0)
-      dispatch(savePhotoSuccess(response.data.data.photos));
+      dispatch(actions.savePhotoSuccess(response.data.data.photos));
   };
 };
 
-export const saveProfile = (profile: ProfileType) => {
-  return async (dispatch: any, getState: any) => {
+export const saveProfile = (profile: ProfileType): ThunkType => {
+  return async (dispatch, getState) => {
     const userId = getState().auth.userId;
     let data = await profileAPI.saveProfile(profile);
 
     if (data.resultCode === 0) {
-      dispatch(getUsersProfile(userId));
+
+      if(userId !== null){
+        dispatch(getUsersProfile(userId));
+      } else {
+        throw new Error("user id can not be null")
+      }
+
+      
     } else {
       dispatch(stopSubmit("edit-profile", { _error: data.messages[0] }));
       return Promise.reject(data.messages[0])
     }
   };
 };
-
 //saveProfile возвращает promise так как функция await
 
 export default profileReducer;
+
+
+//types 
+export type InitialStateType = typeof initialState
+type ActionsType = InferActionsTypes<typeof actions>
+type ThunkType = BaseThunkType<ActionsType | FormAction>

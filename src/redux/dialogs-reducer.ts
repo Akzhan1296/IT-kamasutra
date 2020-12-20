@@ -1,4 +1,4 @@
-const SEND_MESSAGE = "SEND_MESSAGE";
+import { InferActionsTypes } from './redux-store'
 
 type Dialog = {
   id: number,
@@ -29,10 +29,8 @@ let initialState = {
 
 };
 
-export type InitialStateType = typeof initialState
 
-
-const dialogsReducer = (state = initialState, action: any): InitialStateType => {
+const dialogsReducer = (state = initialState, action: ActionsType): InitialStateType => {
   // let stateCopy = {...state};
   //   stateCopy.messages = [...state.messages];
 
@@ -41,8 +39,7 @@ const dialogsReducer = (state = initialState, action: any): InitialStateType => 
   //  };  //одно и тоже с коментом но написали в одну стрончку
 
   switch (action.type) {
-
-    case SEND_MESSAGE:
+    case 'SN/DIALOGS/SEND_MESSAGE':
       let body = action.newMessageBody;
       return {
         ...state,
@@ -55,12 +52,13 @@ const dialogsReducer = (state = initialState, action: any): InitialStateType => 
   }
 };
 
-type sendMessageActionCreatorType = {
-  type: typeof SEND_MESSAGE,
-  newMessageBody: string
+
+export const actions = {
+  sendMessageActionCreator: (newMessageBody: string) => ({ type: 'SN/DIALOGS/SEND_MESSAGE', newMessageBody } as const)
 }
 
-export const sendMessageActionCreator = (newMessageBody: string): sendMessageActionCreatorType => ({ type: SEND_MESSAGE, newMessageBody });
-
-
 export default dialogsReducer;
+
+//types 
+export type InitialStateType = typeof initialState
+type ActionsType = InferActionsTypes< typeof actions>
