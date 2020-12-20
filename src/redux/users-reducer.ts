@@ -4,7 +4,8 @@ import { updateObjectinArray } from "../utils/object-helpers"
 import { UserType } from "../types/types"
 
 import { Dispatch } from 'redux'
-import { ThunkAction } from 'redux-thunk';
+// import { ThunkAction } from 'redux-thunk';
+import {BaseThunkType} from "./redux-store"
 
 // const FOLLOW = "FOLLOW";
 // const UNFOLLOW = "UNFOLLOW";
@@ -101,7 +102,8 @@ export const actions = {
 
 type GetStateType = () => AppStateType
 type DispatchType = Dispatch<ActionsTypes>
-type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>
+
+type ThunkType = BaseThunkType<ActionsTypes> 
 
 
 export const getUsersThunkCreator = (page: number, pageSize: number): ThunkType => {
