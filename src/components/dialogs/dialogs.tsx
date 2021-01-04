@@ -2,14 +2,24 @@ import React from "react";
 import DialogItem from "./dialogItem/DialogItem";
 import Message from "./message/Message";
 import s from "./dialogs.module.css";
-import { Redirect } from "react-router-dom";
-import AddMessageFormRedux from "../../components/dialogs/addMessageForm/addMessageForm";
+import AddMessageFormRedux from "./addMessageForm/addMessageForm";
+import { InitialStateType } from "../../redux/dialogs-reducer";
 
 const { dialogsWrap, dialogsItem, messagesWrap, textarea, dialogBtn } = s;
 
-const Dialogs = (props) => {
-  let addNewMessage = (values) => {
-    props.sendMessage(values.newMessage);
+export type NewMessageFormValuesType = {
+  newMessageBody: string;
+};
+
+type PropsType = {
+  dialogsPage: InitialStateType
+  sendMessage: (messageText: string) => void
+  
+}
+
+const Dialogs: React.FC<PropsType> = (props) => {
+  let addNewMessage = (values: NewMessageFormValuesType) => {
+    props.sendMessage(values.newMessageBody);
   };
 
   let dialogsElements = props.dialogsPage.dialogs.map((d) => (
@@ -19,8 +29,7 @@ const Dialogs = (props) => {
     <Message message={m.message} key={m.id} />
   ));
 
-  if (!props.isAuth) return <Redirect to={"/login"} />;
-
+ 
   return (
     <div className={dialogsWrap}>
       <div className={dialogsItem}>{dialogsElements}</div>

@@ -1,9 +1,10 @@
 import React from "react";
-import AddMessageFormRedux from "./dialogs";
+import Dialogs from "./dialogs";
 import { actions } from "../../redux/dialogs-reducer";
 import { withAuthRedirect } from "../../hoc/WithAuthRedirect";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { AppStateType } from "../../redux/redux-store";
 
 //Старая версия когда мы сами делали контейнерную компоненту
 // const DialogsContainer = () => {
@@ -35,7 +36,7 @@ import { compose } from "redux";
 //данная функция сама обращается к store и получает state
 //store.getState()
 
-let mapStateToProps = (state) => {
+let mapStateToProps = (state: AppStateType) => {
   return {
     dialogsPage: state.dialogsPage,
   };
@@ -44,18 +45,18 @@ let mapStateToProps = (state) => {
 
 //connect автоматом сам засунет dispatch
 //а именно store.dispatch.bind(store)
-let mapDispatchToProps = (dispatch) => {
-  return {
-    sendMessage: (newMessage) => {
-      dispatch(actions.sendMessageActionCreator(newMessage));
-    },
-  };
-};
+// let mapDispatchToProps = (dispatch) => {
+//   return {
+//     sendMessage: (newMessage) => {
+//       dispatch(actions.sendMessageActionCreator(newMessage));
+//     },
+//   };
+// };
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
+export default compose<React.ComponentType>(
+  connect(mapStateToProps, {...actions}),
   withAuthRedirect
-)(AddMessageFormRedux);
+)(Dialogs);
 
 // let AuthRedirectComponent = withAuthRedirect(Dialogs);
 // const DialogsContainer = connect(mapStateToProps,mapDispatchToProps)(AuthRedirectComponent);
@@ -64,3 +65,6 @@ export default compose(
 //Здесь мы делаем connect с redux
 //Здесь нету классового компонента так как пока что мы не делаем запрос на сервер
 //Комментарий от 68 урока
+
+
+//сезон 2 11 урок 

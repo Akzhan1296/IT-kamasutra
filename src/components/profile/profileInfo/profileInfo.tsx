@@ -7,17 +7,17 @@ import ProfileDataFormReduxForm from "./ProfileDataForm";
 import userPhoto from "../../../assets/imgs/userPhoto.jpg";
 import { ContactsType, ProfileType } from "../../../types/types";
 
-// type ProfileInfoPropsType = {
-//   profile: ProfileType;
-//   status: string;
-//   isOwner: boolean;
-//   updateStatus: (status: string) => void;
-//   savePhoto: (file: File) => void;
-//   saveProfile: (profile: ProfileType) => Promise<any>;
-// };
 
-// const ProfileInfo: React.FC<ProfileInfoPropsType> = ({
-  const ProfileInfo = ({
+type PropsType = {
+  profile: ProfileType;
+  status: string;
+  isOwner: boolean;
+  updateStatus: (status: string) => void;
+  savePhoto: (file: File) => void;
+  saveProfile: ProfileType //(profile: ProfileType) => Promise<any>;
+};  
+
+const ProfileInfo: React.FC<PropsType> = ({
   profile,
   status,
   isOwner,
@@ -32,7 +32,7 @@ import { ContactsType, ProfileType } from "../../../types/types";
     return <Preloader />;
   }
 
-  const onMainPhotoSelected = (e) => {
+  const onMainPhotoSelected = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length) {
       savePhoto(e.target.files[0]);
     }
@@ -83,11 +83,7 @@ import { ContactsType, ProfileType } from "../../../types/types";
 // };
 
 // const ProfileData: React.FC<ProfileDataPropsType> = ({
-  const ProfileData = ({
-  profile,
-  isOwner,
-  goToEditMode,
-}) => {
+const ProfileData = ({ profile, isOwner, goToEditMode }) => {
   return (
     <div>
       <div>{isOwner && <button onClick={goToEditMode}>Edit </button>}</div>
@@ -129,10 +125,7 @@ import { ContactsType, ProfileType } from "../../../types/types";
 
 //const Contact: React.FC<ContactPropsType> = ({
 
-const Contact = ({
-  contactTitle,
-  contactValue,
-}) => {
+const Contact = ({ contactTitle, contactValue }) => {
   return (
     <div className={s.contact}>
       <b>{contactTitle}</b>: {contactValue}
