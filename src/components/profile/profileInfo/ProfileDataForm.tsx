@@ -1,10 +1,20 @@
 import React from "react";
-import {createField, Input, TextArea} from "../../common/FormsControls/FormsControls"
-import {reduxForm } from "redux-form";
+import {createField, GetStringKeys, Input, TextArea} from "../../common/FormsControls/FormsControls"
+import {InjectedFormProps, reduxForm } from "redux-form";
 import s from "./profileInfo.module.css";
 import style from "../../common/FormsControls/FormsControls.module.css"
+import {ProfileType} from "../../../types/types"
 
-const ProfileDataForm = (props) => {
+type PropsType = {
+  profile: ProfileType,
+
+}
+
+type ProfileTypeKeys = GetStringKeys<ProfileType>
+
+
+
+const ProfileDataForm: React.FC<InjectedFormProps<ProfileType, PropsType> & PropsType> = (props) => {
   console.log(props)
   return (
     <form onSubmit={props.handleSubmit}>
@@ -14,20 +24,20 @@ const ProfileDataForm = (props) => {
 
       
       <div>
-        <b>Full name</b> {createField("Full name", "fullName", [], Input)}
+        <b>Full name</b> {createField<ProfileTypeKeys>("Full name", "fullName", [], Input)}
       </div>
       <div>
         <b>Looking for a job:</b> 
-        {createField("", "lookingForAJob", [], Input, {type: "checkbox"})}
+        {createField<ProfileTypeKeys>("", "lookingForAJob", [], Input, {type: "checkbox"})}
       </div>
       
         <div>
           <b>My professional skills</b>: 
-          {createField("My professional skills", "lookingForAJobDescription", [], TextArea)}
+          {createField<ProfileTypeKeys>("My professional skills", "lookingForAJobDescription", [], TextArea)}
         </div>
         <div>
           <b>About me</b>: 
-          {createField("About me", "aboutMe", [], TextArea)}
+          {createField<ProfileTypeKeys>("About me", "aboutMe", [], TextArea)}
         </div>
     
       <div>
@@ -44,6 +54,6 @@ const ProfileDataForm = (props) => {
   );
 };
 
-const ProfileDataFormReduxForm = reduxForm({form:"edit-profile"})(ProfileDataForm)
+const ProfileDataFormReduxForm = reduxForm<ProfileType, PropsType>({form:"edit-profile"})(ProfileDataForm)
 
-export default ProfileDataFormReduxForm;
+export default ProfileDataFormReduxForm;  

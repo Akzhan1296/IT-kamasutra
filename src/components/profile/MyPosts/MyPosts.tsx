@@ -7,12 +7,17 @@ import { PostType } from "../../../types/types";
 
 const { postsBlock, postsWrap } = s;
 
-type propsType = {
+export type MapPropsType = {
   posts: Array<PostType>;
+};
+
+export type DispatchPropsType = {
   addPost: (newPostText: string) => void;
 };
 
-const MyPosts: React.FC<propsType> = ({ posts, addPost }) => {
+
+
+const MyPosts: React.FC<MapPropsType & DispatchPropsType> = ({ posts, addPost }) => {
   let postsElements = posts.map((post, index) => (
     <Post message={post.message} likeCount={post.likesCount} key={index} />
   ));

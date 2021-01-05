@@ -6,10 +6,10 @@ import s from "./profile.module.css";
 import {ProfileType} from "../../types/types"
 
 
-
+ 
 type Propstype = {
   savePhoto: (file: File) => void,
-  saveProfile: (profile: ProfileType) => void,
+  saveProfile: (profile: ProfileType) => Promise<any>,
   updateStatus: (status: string) => void
   isOwner: boolean,
   profile: ProfileType | null,
