@@ -3,10 +3,19 @@ import s from './header.module.css';
 import { NavLink } from "react-router-dom";
 
 const {header} = s;
-//Вложенность не сломаеться 
 
-const Header = (props) => {
+export type MapPropsType = {
+  isAuth: boolean,
+  login: string | null,
+}
 
+export type DispatchPropsType = {
+  logout: () => void
+}
+
+
+
+const Header: React.FC<MapPropsType & DispatchPropsType> = (props) => {
     return (
       <header className = {header}>
         <img src="https://cdn.worldvectorlogo.com/logos/tiktok-logo.svg" alt="img"/>

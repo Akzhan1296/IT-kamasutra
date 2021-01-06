@@ -5,7 +5,7 @@ import s from './navbar.module.css'; // module.css делает уникальн
 
 const {active, item, nav} = s;
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   return (
     <nav className={nav}>
       <div className={item}>

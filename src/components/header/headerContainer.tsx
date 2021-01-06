@@ -1,23 +1,25 @@
 import React, { Component } from "react";
-import Header from "./header";
+import Header, {MapPropsType, DispatchPropsType } from "./header";
 import {logout} from "../../redux/auth-reducer";
 import {connect} from "react-redux";
+import { AppStateType } from "../../redux/redux-store";
 
-class HeaderContainer extends Component {
 
+
+class HeaderContainer extends Component<MapPropsType & DispatchPropsType> {
 
   render() {
     return <Header {...this.props} />;
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: AppStateType) => ({ 
   isAuth: state.auth.isAuth,
   login: state.auth.login
 })
 //эти данные из auth-reducer попадает в нашу компаненту
 
-export default connect(mapStateToProps,{
+export default connect<MapPropsType, DispatchPropsType,{}, AppStateType>(mapStateToProps,{
   logout
 })(HeaderContainer);
 // короткая запись mapDispatchToProps
