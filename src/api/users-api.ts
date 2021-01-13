@@ -3,9 +3,9 @@ import { instance, GetItemsType, APIResponseType } from "./api"
 
 
 export const usersAPI = {
-  getUsers(currentPage = 1, pageSize = 10) {
+  getUsers(currentPage = 1, pageSize = 10, term: string = '') {
     return instance
-      .get<GetItemsType>(`users?page=${currentPage}&count=${pageSize}`)
+      .get<GetItemsType>(`users?page=${currentPage}&count=${pageSize}&term=${term}`)
       .then((response) => response.data);
   },
 

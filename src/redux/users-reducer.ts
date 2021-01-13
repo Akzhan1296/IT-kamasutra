@@ -13,7 +13,11 @@ let initialState = {
   totalUsersCount: 0,
   currentPage: 1,
   isFetching: true,
-  followingInProgress: [] as Array<number>, //array of users ids
+  followingInProgress: [] as Array<number>, //array of users ids,
+  filter: {
+    term: '',
+    friend: null as null | boolean
+  }
 };
 
 
@@ -57,6 +61,13 @@ const usersReducer = (state = initialState, action: ActionsTypes): InitialState 
           ? [...state.followingInProgress, action.userId]
           : state.followingInProgress.filter(id => id !== action.userId)
       };
+
+    case "SN/USERS/SET_FILTER": {
+      return {
+        ...state,
+        filter: action.payload
+      }
+    }
     default:
       return state;
   }
@@ -76,27 +87,33 @@ export const actions = {
   setTotalUsersCount: (totalUsersCount: number) => ({
     type: 'SN/USERS/SET_TOTAL_COUNT',
     count: totalUsersCount,
-  } as const), // type: SET_TOTAL_COUNT, count:totalUsersCount
+  } as const), 
+  setFilter: (term: string) => ({
+    type: "SN/USERS/SET_FILTER",
+    payload: {term}
+  } as const),
+
   toggleIsFetching: (isFetching: boolean) => ({
     type: 'SN/USERS/TOGGLE_IS_FETCHING',
     isFetching,
-  } as const), //isFetching:true
+  } as const), 
   toggleFollowingProgress: (isFetching: boolean, userId: number) => ({
     type: 'SN/USERS/TOGGLE_IS_FOLLOWING_PROGRESS',
     isFetching,
     userId,
-  } as const), //isFetching:true
+  } as const), 
 }
 
 
 //thunks
-export const getUsersThunkCreator = (page: number, pageSize: number): ThunkType => {
+export const getUsersThunkCreator = (page: number, pageSize: number,  term: string): ThunkType => {
   return async (dispatch, getState) => {
     dispatch(actions.toggleIsFetching(true));
-    let response = await usersAPI.getUsers(page, pageSize);
+    let response = await usersAPI.getUsers(page, pageSize, term);
     dispatch(actions.toggleIsFetching(false));
     dispatch(actions.setUsers(response.items));
     dispatch(actions.setTotalUsersCount(response.totalCount));
+    dispatch(actions.setFilter(term))
     //мы задаем данные из api в setusers
   };
 };
@@ -141,5 +158,6 @@ export const unfollow = (userId: number): ThunkType => {
 
 //types 
 type InitialState = typeof initialState;
+export type FilterType = typeof initialState.filter
 type ActionsTypes = InferActionsTypes<typeof actions>
 type ThunkType = BaseThunkType<ActionsTypes> 

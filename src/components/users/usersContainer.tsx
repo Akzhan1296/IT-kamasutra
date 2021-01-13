@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-import{ AppStateType} from "../../redux/redux-store"
+import { AppStateType } from "../../redux/redux-store";
 
 import { UserType } from "../../types/types";
 
@@ -9,6 +9,7 @@ import {
   unfollow,
   //setCurrentPage,
   getUsersThunkCreator,
+  FilterType,
 } from "../../redux/users-reducer";
 
 import {
@@ -18,6 +19,7 @@ import {
   getIsFetching,
   getFollowingInProgress,
   getUsersSuperSelector,
+  getUsersFilter,
 } from "../../redux/users-selectors";
 
 import Users from "./Users";
@@ -25,52 +27,60 @@ import Preloader from "../common/preloader/Preloader";
 import { compose } from "redux";
 
 type MapStatePropsType = {
-  
-  currentPage: number
-  pageSize: number
-  isFetching: boolean
-  totalUsersCount: number
-  users: Array<UserType>
-  followingInProgress: Array<number>
-}
-
+  currentPage: number;
+  pageSize: number;
+  isFetching: boolean;
+  totalUsersCount: number;
+  users: Array<UserType>;
+  followingInProgress: Array<number>;
+  filter: FilterType;
+};
 
 type MapDispatchPropsType = {
-  unfollow: (userId: number) => void
-  follow: (userId: number) => void
+  unfollow: (userId: number) => void;
+  follow: (userId: number) => void;
   //setCurrentPage: (pageNumber: number) => void;
-  getUsersThunkCreator: (currentPage: number, pageSize: number) => void;
-}
+  getUsersThunkCreator: (
+    currentPage: number,
+    pageSize: number,
+    term: string
+  ) => void;
+};
 
 type OwnPropsType = {
-  pageTitle: string,
-}
+  pageTitle: string;
+};
 
-
-type PropsType = MapStatePropsType & MapDispatchPropsType & OwnPropsType
+type PropsType = MapStatePropsType & MapDispatchPropsType & OwnPropsType;
 
 class UsersContainer extends React.Component<PropsType> {
   componentDidMount() {
     let { currentPage, pageSize } = this.props;
-    this.props.getUsersThunkCreator(currentPage, pageSize);
+    this.props.getUsersThunkCreator(currentPage, pageSize, "");
   }
 
   onPageChanged = (pageNumber: number) => {
-    let { pageSize } = this.props;
-    this.props.getUsersThunkCreator(pageNumber, pageSize);
+    let { pageSize, filter } = this.props;
+    this.props.getUsersThunkCreator(pageNumber, pageSize, filter.term);
     //this.props.setCurrentPage(pageNumber);
+  };
+
+  onFilterChanged = (filter: FilterType) => {
+    let { pageSize } = this.props;
+    this.props.getUsersThunkCreator(1, pageSize, filter.term);
   };
 
   render() {
     return (
       <>
-      <h2>{this.props.pageTitle}</h2>
+        <h2>{this.props.pageTitle}</h2>
         {this.props.isFetching ? <Preloader /> : null}
         <Users
           totalUsersCount={this.props.totalUsersCount}
           pageSize={this.props.pageSize}
           currentPage={this.props.currentPage}
           onPageChanged={this.onPageChanged}
+          onFilterChanged={this.onFilterChanged}
           users={this.props.users}
           follow={this.props.follow}
           unfollow={this.props.unfollow}
@@ -81,7 +91,7 @@ class UsersContainer extends React.Component<PropsType> {
   }
 }
 
-let mapStateToProps = (state: AppStateType):MapStatePropsType => {
+let mapStateToProps = (state: AppStateType): MapStatePropsType => {
   return {
     // users: getUsers(state),
     users: getUsersSuperSelector(state),
@@ -90,6 +100,7 @@ let mapStateToProps = (state: AppStateType):MapStatePropsType => {
     currentPage: getCurrentPage(state),
     isFetching: getIsFetching(state),
     followingInProgress: getFollowingInProgress(state),
+    filter: getUsersFilter(state),
   };
 };
 
@@ -131,12 +142,15 @@ let mapStateToProps = (state: AppStateType):MapStatePropsType => {
 //     }
 // }
 export default compose(
-  connect<MapStatePropsType,MapDispatchPropsType,OwnPropsType, AppStateType>(mapStateToProps, {
-    follow,
-    unfollow,
-    //setCurrentPage,
-    getUsersThunkCreator, //находится в reducer
-  })
+  connect<MapStatePropsType, MapDispatchPropsType, OwnPropsType, AppStateType>(
+    mapStateToProps,
+    {
+      follow,
+      unfollow,
+      //setCurrentPage,
+      getUsersThunkCreator, //находится в reducer
+    }
+  )
 )(UsersContainer);
 
 //ДО COMPOSE
