@@ -27,7 +27,7 @@ const usersReducer = (state = initialState, action: ActionsTypes): InitialState 
   switch (action.type) {
     case 'SN/USERS/FOLLOW':
       return {
-        ...state,
+        ...state, 
         users: updateObjectinArray(state.users, action.userId, "id", { followed: true })
       };
     case 'SN/USERS/UNFOLLOW':
@@ -88,9 +88,9 @@ export const actions = {
     type: 'SN/USERS/SET_TOTAL_COUNT',
     count: totalUsersCount,
   } as const), 
-  setFilter: (term: string) => ({
+  setFilter: (filter: FilterType) => ({
     type: "SN/USERS/SET_FILTER",
-    payload: {term}
+    payload: filter
   } as const),
 
   toggleIsFetching: (isFetching: boolean) => ({
@@ -106,14 +106,14 @@ export const actions = {
 
 
 //thunks
-export const getUsersThunkCreator = (page: number, pageSize: number,  term: string): ThunkType => {
+export const getUsersThunkCreator = (page: number, pageSize: number,  filter: FilterType): ThunkType => {
   return async (dispatch, getState) => {
     dispatch(actions.toggleIsFetching(true));
-    let response = await usersAPI.getUsers(page, pageSize, term);
+    let response = await usersAPI.getUsers(page, pageSize, filter.term, filter.friend);
     dispatch(actions.toggleIsFetching(false));
     dispatch(actions.setUsers(response.items));
     dispatch(actions.setTotalUsersCount(response.totalCount));
-    dispatch(actions.setFilter(term))
+    dispatch(actions.setFilter(filter))
     //мы задаем данные из api в setusers
   };
 };
