@@ -3,13 +3,13 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { initializeApp } from "./redux/app-reducer";
 import { AppStateType } from "./redux/redux-store";
-import Login from "./components/Login/Login";
+import { LoginPage } from "./components/Login/LoginPage";
 import HeaderContainer from "./components/header/headerContainer";
 import Navbar from "./components/navbar/navbar";
 
 //import ProfileContainer from "./components/profile/profileContainer";
 // import DialogsContainer from "./components/dialogs/dialogsContainer";
-import UsersContainer from "./components/users/usersContainer";
+import {UsersPage} from "./components/users/usersContainer";
 // import News from "./components/news/news";
 // import Setting from "./components/setting/setting";
 // import Music from "./components/music/music";
@@ -83,8 +83,8 @@ class App extends Component<MapPropsType & DispatchPropsType > {
               path="/profile/:userId?"
               render={() => <SuspendedProfile/>}
             />
-            <Route path="/users" render={() => <UsersContainer pageTitle={"Самураи"}/>} />
-            <Route path="/login" render={() => <Login />} />
+            <Route path="/users" render={() => <UsersPage pageTitle={"Самураи"}/>} />
+            <Route path="/login" render={() => <LoginPage />} />
           </Switch>
         </div>
       </div>
