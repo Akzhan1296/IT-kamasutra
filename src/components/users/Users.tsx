@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { UsersSearchForm } from "./UsersSearchForm";
+
 import {
   FilterType,
   getUsersThunkCreator,
@@ -8,6 +9,7 @@ import {
 } from "../../redux/users-reducer";
 import { useSelector, useDispatch } from "react-redux";
 import { UserType } from "../../types/types";
+import * as queryString from "querystring";
 
 import {
   getPageSize,
@@ -20,8 +22,16 @@ import {
 
 import Paginator from "../common/Paginator/Paginator";
 import User from "./User";
+import { useHistory } from "react-router-dom";
 
 type PropsType = {};
+type QueryParamsType = {
+  term: string;
+  page: string;
+  friend: string;
+};
+
+
 
 export const Users: React.FC<PropsType> = (props) => {
   const totalUsersCount = useSelector(getTotalUsersCount);
@@ -30,19 +40,48 @@ export const Users: React.FC<PropsType> = (props) => {
   const users = useSelector(getUsersSuperSelector);
   const followingInProgress = useSelector(getFollowingInProgress);
   const filter = useSelector(getUsersFilter);
+
   const dispatch = useDispatch();
+  const history = useHistory();
 
+  useEffect(() => {
+    const parsed = queryString.parse(history.location.search.substring(1)) as QueryParamsType
+    console.log(parsed);
 
-  useEffect(()=>{
-    dispatch(getUsersThunkCreator(currentPage, pageSize, filter));
-  },[])
+    let actualPage = currentPage;
+    let actualFilter = filter;
 
+    if (!!parsed.page) actualPage = Number(parsed.page);
+    if (!!parsed.term)
+      actualFilter = { ...actualFilter, term: parsed.term as string };
+
+    switch (parsed.friend) {
+      case "null":
+        actualFilter = { ...actualFilter, friend: null };
+        break;
+      case "true":
+        actualFilter = { ...actualFilter, friend: true };
+        break;
+      case "false":
+        actualFilter = { ...actualFilter, friend: false };
+        break;
+    }
+
+    dispatch(getUsersThunkCreator(actualPage, pageSize, actualFilter));
+  }, []);
+
+  useEffect(() => {
+    history.push({
+      pathname: "/users",
+      search: `?term=${filter.term}&friend=${filter.friend}&page=${currentPage}`,
+    });
+  }, [filter, currentPage]);
 
   const onPageChanged = (pageNumber: number) => {
     dispatch(getUsersThunkCreator(pageNumber, pageSize, filter));
   };
 
-  const onFilterChanged = () => {
+  const onFilterChanged = (filter: FilterType) => {
     dispatch(getUsersThunkCreator(1, pageSize, filter));
   };
 
@@ -74,4 +113,3 @@ export const Users: React.FC<PropsType> = (props) => {
     </div>
   );
 };
-

@@ -108,12 +108,15 @@ export const actions = {
 //thunks
 export const getUsersThunkCreator = (page: number, pageSize: number,  filter: FilterType): ThunkType => {
   return async (dispatch, getState) => {
+    console.log(filter)
+
     dispatch(actions.toggleIsFetching(true));
     let response = await usersAPI.getUsers(page, pageSize, filter.term, filter.friend);
     dispatch(actions.toggleIsFetching(false));
     dispatch(actions.setUsers(response.items));
     dispatch(actions.setTotalUsersCount(response.totalCount));
     dispatch(actions.setFilter(filter))
+    dispatch(actions.setCurrentPage(page))
     //мы задаем данные из api в setusers
   };
 };
