@@ -24,7 +24,7 @@ export function withAuthRedirect<WCP>(
 
     if (!isAuth) return <Redirect to="/login" />;
 
-    return <WrappedComponent {...restProps  as WCP} />;
+    return <WrappedComponent {...(restProps as WCP)} />;
   };
   //Вот здесь делаем первую обертку
 
@@ -33,7 +33,10 @@ export function withAuthRedirect<WCP>(
     DispatchPropsType,
     WCP,
     AppStateType
-  >(mapStateToPropsForRedirect, {})(RedirectComponent);
+  >(
+    mapStateToPropsForRedirect,
+    {}
+  )(RedirectComponent);
   //вот здесь делаем вторую обертку для того чтобы не повторять получения данных isAuth
 
   return ConnectedRedirectComponent;
